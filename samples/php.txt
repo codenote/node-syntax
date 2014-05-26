@@ -1,0 +1,16 @@
+/* STRING (and CHAR) */
+"xxxxxxxx"
+"xxxxxxxxx\"xxx
+"
+"\\\\"
+"\"\\"
+
+dddddddd
+
+/* vvvvvv
+vvv
+vvv */
+"xxxxxxxxxxxx"
+//zzzzzzzzzzz  */
+//ccc
+'vvvvvvvvvv'
