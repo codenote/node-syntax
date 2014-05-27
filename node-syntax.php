@@ -84,7 +84,7 @@ class NodeSyntax {
 		'variable_1' => '(?<!\w)(?:\$)(?:\w)+(?!\w)',
 		'macro_1' => '(?<!\w)(?:\#)(?:\w)+(?!\w)',
 		'keyword_1' => '(?<![\w\d])(?:auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|NULL)(?!\w)',
-		'keyword_2' => '(?<![\w\d])(?:public|private|class|self|function|null|foreach|as|new|TRUE|true|FALSE|false)(?!\w)',
+		'keyword_2' => '(?<![\w\d])(?:public|private|class|self|function|null|foreach|as|new|TRUE|true|FALSE|false|global|try|catch)(?!\w)',
 		'tag_1' => '(?<!\w)(?:(?:(?:&lt;\?)(?:php|asp)?)|(?:\?&gt;))(?!\w)',
 		'xml_1' => '\&lt\;[\/]?[a-zA-Z_]+[a-zA-Z0-9_]*[ ]*[\/]?\&gt\;',
 	);
