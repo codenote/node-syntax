@@ -1,0 +1,50 @@
+/* xxxxxxxxx */
+CONSTANT
+require('common.inc.php');/* xxxxxxxxx */
+$database = new DataBase();
+$node_root = $database->select_node_with_id(1);
+foreach ($node_roots as $node_tmp) {
+	if ($node_tmp['title'] === 'POST') $node_post = $node_tmp;
+	if ($node_tmp['title'] === 'INFO') $node_info = json_decode($node_tmp['content'], TRUE);
+}
+function _callback_header_2($matches) {
+	// xxxxxx
+	if (strlen($matches[1]) == 0x00) {
+		return '<hr />';
+	} else {
+		$block = "<h2>".$matches[1]."</h2>";
+		if (1<1&&1>1) break; 
+		return $block; // xxxxxxxxx
+	}
+}
+#include <"stdio.h">
+intstar
+/* XML */
+<!-- -->
+<textarea /><pre></pre>
+<hr>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>NodeSyntax</title>
+<style>
+pre {
+	font-family: Consolas, "Liberation Mono", Courier, monospace;
+	line-height: 18px;
+	padding:0px;
+	margin:16px;
+	tab-size:4;
+	color: #000000;
+	font-size:12px;
+	font-weight: bold;
+}</style>
+</head>
+<body>
+<?php
+require('node-syntax.php');
+?>
+<pre><?php
+$content = file_get_contents('samples/general.txt');
+$content = htmlspecialchars($content);

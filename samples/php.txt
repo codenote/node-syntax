@@ -1,17 +1,89 @@
-/* STRING (and CHAR) */
-"xxxxxxxx"
-"xxxxxxxxx\"xxx
-"
-"\\\\"
-"\"\\"
+<?php
+/*
+i: PCRE_CASELESS
+m: PCRE_MULTILINE
+	^ and $ fit both \r and \n
+s: PCRE_DOTALL
+	. fit also fit \r \n
+
+*/
+?>
+<?php
 
 
-blah blah 
+class NodeSyntax {
 
-/* vvvvvv
-vvv
-vvv */
-"xxxxxxxxxxxx"
-//zzzzzzzzzzz  */
-//ccc
-'vvvvvvvvvv'
+	private $list_preg = [];
+	private $list_type = [];
+	private $list_style = [];
+	private $token_last;
+	private $type_last;
+	
+	function highlight($string, $language = null) {
+		$callback = '_callback_general';
+		
+		
+		if ($language == null) {
+			$this->prepare_preg('comment', 'comment_1');
+			$this->prepare_preg('comment', 'comment_2');
+			$this->prepare_preg('string', 'string_1');
+			$this->prepare_preg('string', 'string_2');
+			$this->prepare_preg('operator', 'operator_1');
+			$this->prepare_preg('number', 'number_1');
+			$this->prepare_preg('keyword', 'keyword_1');
+		} else if ($language == 'c') {
+			$this->prepare_preg('comment', 'comment_1');
+			$this->prepare_preg('comment', 'comment_2');
+			$this->prepare_preg('string', 'string_1');
+			$this->prepare_preg('string', 'string_2');
+			$this->prepare_preg('operator', 'operator_2');
+			$this->prepare_preg('keyword', 'operator_3');
+			$this->prepare_preg('number', 'number_1');
+			$this->prepare_preg('keyword', 'keyword_1');
+		} else if ($language == 'cpp') {
+		} else if ($language == 'php') {
+		}
+		
+		$regex = implode(')|(', $this->list_preg);
+		$regex = '/('.$regex.')/s';
+		echo htmlspecialchars($regex);
+		$string = preg_replace_callback($regex, array( &$this, $callback), $string);
+		return $string;
+	}
+	
+	private static $lib_grep = array (
+		'comment_1' => '\/\/.*?(?:\R|$)',
+		'comment_2' => '\/\*.*?\*\/',
+		'string_1' => '&quot;.*?(?<!\\\\)(?:\\\\\\\\)*&quot;',
+		'string_2' => '\'.*?(?<!\\\\)(?:\\\\\\\\)*\'',
+		'operator_1' => '&gt;&gt;\=|&lt;&lt;\=|\+\=|\-\=|\*\=|\/\=|%\=|&\=|\^\=||\=|&gt;&gt;|&lt;&lt;|\+\+|\-\-|\-&gt;|&amp;&amp;|\|\||&lt;\=|&gt;\=|\=\=|!\=|;|\{|&lt;%|\}|%&gt;|,|:|\=|\(|\)|\[|&lt;:|\]|:&gt;|\.|&amp;|!|~|\-|\+|\*|\/|%|&lt;|&gt;|\^|\||\?',
+		'operator_2' => '&gt;&gt;\=|&lt;&lt;\=|\+\=|\-\=|\*\=|\/\=|%\=|&\=|\^\=||\=|&gt;&gt;|&lt;&lt;|\+\+|\-\-|\-&gt;|&amp;&amp;|\|\||&lt;\=|&gt;\=|\=\=|!\=|:|\=|\.|&amp;|!|~|\-|\+|\*|\/|%|&lt;|&gt;|\^|\||\?',
+		'operator_3' => '\{|\}|\(|\)|\[|\]|;',
+		'number_1' => '(?<!\w)0x[\da-f]+|\d+(?!\w)',
+		'token_1' => '(?<![\w\d])[a-zA-Z_]+\w*(?!\w)',
+		'keyword_1' => '(?<![\w\d])(?:auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|NULL)(?!\w)',
+	);
+	
+	private static $lib_style = array (
+		'comment' => 'c_c',
+		'string' => 'c_s',
+		'operator' => 'c_o',
+		'number' => 'c_n',
+		'variable' => 'c_v',
+		'keyword' => 'c_k',
+		'function' => 'c_f',
+	);
+	
+	private function prepare_preg($type, $grep) {
+		array_push($this->list_preg, self::$lib_grep[$grep]);
+		array_push($this->list_style, self::$lib_style[$type]);
+		array_push($this->list_type, $type);
+	}
+	
+	private function _callback_general( $matches ) {
+		$index = count($matches)-2;
+		$token = $matches[0];
+		if (strlen($token) == 0) return '';
+		return '<span class="'.$this->list_style[$index].'">'.$token.'</span>';
+	}
+}
