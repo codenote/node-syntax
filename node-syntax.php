@@ -58,6 +58,7 @@ class NodeSyntax {
 			$this->prepare_preg('number', 'number_1');
 			$this->prepare_preg('keyword', 'keyword_python');
 			$this->prepare_preg('function', 'function_python');
+			$this->prepare_preg('function', 'decorator_1');
 		}
 		
 		$regex = implode(')|(', $this->list_preg);
@@ -87,6 +88,7 @@ class NodeSyntax {
 		'keyword_2' => '(?<![\w\d])(?:public|private|class|self|function|null|foreach|as|new|TRUE|true|FALSE|false|global|try|catch|array|bool|string|mixed)(?!\w)',
 		'keyword_python' => '(?<![\w\d])(?:True|False|None|class|def|return|and|or|not|import|from|as|try|except|finally|raise|pass|if|else|elif|while|for|in|continue|break|global|nonlocal|del|with|is|lambda|yield|assert)(?!\w)',
 		'tag_1' => '(?<!\w)(?:(?:(?:&lt;\?)(?:php|asp)?)|(?:\?&gt;))(?!\w)',
+		'decorator_1' => '(?<!\w)(?:\@)(?:\w)+(?!\w)',
 		'xml_1' => '\&lt\;[\/]?[a-zA-Z_]+[a-zA-Z0-9_]*[ ]*[\/]?\&gt\;',
 		'function_1' => '(?<![\w\d])(?:echo|print|require|include|count|strlen|pack|ltrim|chr)(?!\w)',
 		'function_2' => '(?<![\w\d])(?:foreach|in|Exception|Console)(?!\w)',
