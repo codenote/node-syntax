@@ -1,15 +1,4 @@
 ﻿<?php
-/*
-i: PCRE_CASELESS
-m: PCRE_MULTILINE
-	^ and $ fit both \r and \n
-s: PCRE_DOTALL
-	. fit also fit \r \n
-
-*/
-
-
-
 class NodeSyntax {
 
 	private $list_preg = [];
@@ -20,9 +9,7 @@ class NodeSyntax {
 	
 	function highlight($string, $language = null) {
 		$callback = '_callback_general';
-		
-		
-		if ($language == null) {
+		if ($language == null || $language == 'general') {
 			$this->prepare_preg('comment', 'comment_1');
 			$this->prepare_preg('comment', 'comment_2');
 			$this->prepare_preg('comment', 'comment_3');
@@ -36,7 +23,6 @@ class NodeSyntax {
 			$this->prepare_preg('keyword', 'keyword_2');
 			$this->prepare_preg('variable', 'variable_1');
 			$this->prepare_preg('macro', 'macro_1');
-			
 		} else if ($language == 'c') {
 			$this->prepare_preg('comment', 'comment_1');
 			$this->prepare_preg('comment', 'comment_2');
@@ -60,10 +46,22 @@ class NodeSyntax {
 			$this->prepare_preg('keyword', 'keyword_1');
 			$this->prepare_preg('keyword', 'keyword_2');
 			$this->prepare_preg('variable', 'variable_1');
+			$this->prepare_preg('function', 'function_1');
+		} else if ($language == 'python') {
+			$this->prepare_preg('comment', 'comment_4');
+			$this->prepare_preg('comment', 'comment_5');
+			$this->prepare_preg('string', 'string_1');
+			$this->prepare_preg('string', 'string_2');
+			$this->prepare_preg('operator', 'operator_4');
+			$this->prepare_preg('operator', 'operator_2');
+			$this->prepare_preg('operator', 'operator_3');
+			$this->prepare_preg('number', 'number_1');
+			$this->prepare_preg('keyword', 'keyword_python');
+			$this->prepare_preg('function', 'function_python');
 		}
 		
 		$regex = implode(')|(', $this->list_preg);
-		$regex = '/('.$regex.')/s';
+		$regex = '/('.$regex.')/su';
 		// echo htmlspecialchars($regex);
 		$string = preg_replace_callback($regex, array( &$this, $callback), $string);
 		return $string;
@@ -73,20 +71,26 @@ class NodeSyntax {
 		'comment_1' => '\/\/.*?(?:\R|$)',
 		'comment_2' => '\/\*.*?\*\/',
 		'comment_3' => '\&lt\;!--.*--\&gt\;',
+		'comment_4' => '#.*?(?:\R|$)',
+		'comment_5' => "'''.*?'''",
 		'string_1' => '&quot;.*?(?<!\\\\)(?:\\\\\\\\)*&quot;',
 		'string_2' => '\'.*?(?<!\\\\)(?:\\\\\\\\)*\'',
 		'operator_1' => '&gt;&gt;\=|&lt;&lt;\=|\+\=|\-\=|\*\=|\/\=|%\=|&\=|\^\=||\=|&gt;&gt;|&lt;&lt;|\+\+|\-\-|\-&gt;|&amp;&amp;|\|\||&lt;\=|&gt;\=|\=\=|!\=|;|\{|&lt;%|\}|%&gt;|,|:|\=|\(|\)|\[|&lt;:|\]|:&gt;|\.|&amp;|!|~|\-|\+|\*|\/|%|&lt;|&gt;|\^|\||\?',
 		'operator_2' => '&gt;&gt;\=|&lt;&lt;\=|\+\=|\-\=|\*\=|\/\=|%\=|&\=|\^\=||\=|&gt;&gt;|&lt;&lt;|\+\+|\-\-|&amp;&amp;|\|\||&lt;\=|&gt;\=|\=\=|!\=|\=|&amp;|!|~|\-|\+|\*|\/|%|&lt;|&gt;|\^|\|',
 		'operator_3' => '\{|\}|\(|\)|\[|\]|;',
 		'operator_4' => '\?\|::|:|\.|\-&gt;|\=&gt;',
-		'number_1' => '(?<!\w)0x[\da-f]+|\d+(?!\w)',
+		'number_1' => '(?<!\w)(?:0x[\da-fA-F]+|\d+)(?!\w)',
 		'token_1' => '(?<![\w\d])[a-zA-Z_]+\w*(?!\w)',
 		'variable_1' => '(?<!\w)(?:\$)(?:\w)+(?!\w)',
 		'macro_1' => '(?<!\w)(?:\#)(?:\w)+(?!\w)',
 		'keyword_1' => '(?<![\w\d])(?:auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|NULL)(?!\w)',
-		'keyword_2' => '(?<![\w\d])(?:public|private|class|self|function|null|foreach|as|new|TRUE|true|FALSE|false|global|try|catch)(?!\w)',
+		'keyword_2' => '(?<![\w\d])(?:public|private|class|self|function|null|foreach|as|new|TRUE|true|FALSE|false|global|try|catch|array|bool|string|mixed)(?!\w)',
+		'keyword_python' => '(?<![\w\d])(?:True|False|None|class|def|return|and|or|not|import|from|as|try|except|finally|raise|pass|if|else|elif|while|for|in|continue|break|global|nonlocal|del|with|is|lambda|yield|assert)(?!\w)',
 		'tag_1' => '(?<!\w)(?:(?:(?:&lt;\?)(?:php|asp)?)|(?:\?&gt;))(?!\w)',
 		'xml_1' => '\&lt\;[\/]?[a-zA-Z_]+[a-zA-Z0-9_]*[ ]*[\/]?\&gt\;',
+		'function_1' => '(?<![\w\d])(?:echo|print|require|include|count|strlen|pack|ltrim|chr)(?!\w)',
+		'function_2' => '(?<![\w\d])(?:foreach|in|Exception|Console)(?!\w)',
+		'function_python' => '(?<![\w\d])(?:range|tuple|list|object|self|cls|exec|print|cast|byref|__init__|_fields_)(?!\w)',
 	);
 	
 	private static $lib_style = array (

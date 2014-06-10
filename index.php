@@ -69,6 +69,13 @@ $nodesyntax = new NodeSyntax();
 $content = $nodesyntax->highlight($content, 'php');
 echo preg_replace('/\r\n/u', '<br />', $content);
 ?></pre>
+<pre><?php
+$content = file_get_contents('samples/python.txt');
+$content = htmlspecialchars($content);
+$nodesyntax = new NodeSyntax();
+$content = $nodesyntax->highlight($content, 'python');
+echo preg_replace('/\r\n/u', '<br />', $content);
+?></pre>
 </body>
 </html>
 
